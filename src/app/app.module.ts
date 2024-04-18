@@ -9,6 +9,8 @@ import { ServersComponent } from './servers/servers.component';
 import { WarningAlertComponent } from './warning-alert/warning-alert.component';
 import { SuccessAlertComponent } from './success-alert/success-alert.component';
 import { BindingAssignmentComponent } from './binding-assignment/binding-assignment.component';
+import { DirectivesAssignmentComponent } from './directives-assignment/directives-assignment.component';
+import { ComponentsAssignmentComponent } from './components-assignment/components-assignment.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { BindingAssignmentComponent } from './binding-assignment/binding-assignm
     ServersComponent,
     WarningAlertComponent,
     SuccessAlertComponent,
-    BindingAssignmentComponent
+    BindingAssignmentComponent,
+    DirectivesAssignmentComponent,
+    ComponentsAssignmentComponent
   ],
   imports: [
     BrowserModule,
