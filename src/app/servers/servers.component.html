@@ -20,5 +20,4 @@ class="btn btn-primary"
         No Server was created yet
     </p>    
 </ng-template>
-<div class="app-server"></div>
-<div class="app-server"></div>
+<div *ngFor="let server of servers" class="app-server"></div>
