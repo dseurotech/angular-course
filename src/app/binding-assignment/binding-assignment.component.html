@@ -1,0 +1,9 @@
+<div class="row">
+    <input class="col-xs-8" type="text" [(ngModel)]="username">
+    <button 
+    class="btn col-xs-4" 
+    (click)="onUserClearClick()"
+    [disabled]="!this.username"
+    >Clear</button>
+</div>
+<p>Username is: {{ username }}</p>
