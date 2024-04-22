@@ -7,7 +7,7 @@ import { Recipe } from '../recipe.model';
   styleUrl: './recipe-list.component.css'
 })
 export class RecipeListComponent {
-  @Output() recipeSelected = new EventEmitter<Recipe>();
+  @Output() recipeChosen = new EventEmitter<Recipe>();
 
   recipes: Recipe[] = [
     new Recipe("Dummy Recipe", "Dummy description", "https://storage.needpix.com/rsynced_images/recipe-575434_1280.png"),
@@ -18,6 +18,6 @@ export class RecipeListComponent {
   ];
 
   onRecipeSelected(recipe: Recipe) {
-    this.recipeSelected.emit(recipe);
+    this.recipeChosen.emit(recipe);
   }
 }
