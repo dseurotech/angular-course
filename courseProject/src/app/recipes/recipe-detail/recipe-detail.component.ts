@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
+import { ShoppingListService } from '../../shopping-list/shopping-list.service';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -8,12 +9,13 @@ import { RecipeService } from '../recipe.service';
   styleUrl: './recipe-detail.component.css'
 })
 export class RecipeDetailComponent implements OnInit {
-  recipe: Recipe = null;
+  @Input() recipe: Recipe;
 
-  constructor(private recipeService: RecipeService) { }
+  constructor(private recipeService: RecipeService, private shoppingListService: ShoppingListService) { }
   ngOnInit(): void {
-    this.recipeService.recipeSelected.subscribe((selected: Recipe) => {
-      return this.recipe = selected;
-    });
+  }
+
+  onAddToShoppingList() {
+    this.shoppingListService.addIngredients(this.recipe.ingredients);
   }
 }
