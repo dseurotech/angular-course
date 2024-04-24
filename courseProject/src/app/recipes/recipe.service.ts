@@ -6,7 +6,6 @@ import { Ingredient } from '../shared/ingredient.model';
   providedIn: 'root'
 })
 export class RecipeService {
-  recipeSelected: EventEmitter<Recipe> = new EventEmitter<Recipe>();
 
   private recipes: Recipe[] = [
     new Recipe("Dummy Recipe", "Dummy description", "https://storage.needpix.com/rsynced_images/recipe-575434_1280.png", [new Ingredient("Bread", 5), new Ingredient("Egg", 1)]),
