@@ -10,10 +10,12 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
   styleUrl: './recipe-detail.component.css'
 })
 export class RecipeDetailComponent implements OnInit {
+
   recipe: Recipe;
   id: number;
   constructor(private recipeService: RecipeService, private shoppingListService: ShoppingListService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router:Router
   ) { }
 
   ngOnInit(): void {
@@ -25,5 +27,10 @@ export class RecipeDetailComponent implements OnInit {
 
   onAddToShoppingList() {
     this.shoppingListService.addIngredients(this.recipe.ingredients);
+  }
+
+  onDeleteRecipe() {
+    this.recipeService.deleteRecipe(this.id);
+    this.router.navigate(["/recipes"])
   }
 }
