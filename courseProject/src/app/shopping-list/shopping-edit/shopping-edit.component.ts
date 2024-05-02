@@ -11,6 +11,7 @@ import { NgFor } from '@angular/common';
   styleUrl: './shopping-edit.component.css'
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
+
   @ViewChild('f') form: NgForm;
   private sub: Subscription;
   editMode: boolean = false;
@@ -44,10 +45,13 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     }
     this.onClear();
   }
-
+  onRemoveIngredient() {
+    this.shoppingListService.deleteIngredient(this.editedItemIndex);
+    this.onClear();
+  }
   onClear() {
     this.editMode = false;
     this.editedItemIndex = null;
-    this.form.form.reset();
+    this.form.reset();
   }
 }
