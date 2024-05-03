@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from './../../environments/environment';
 import { catchError } from 'rxjs/operators';
@@ -28,18 +28,9 @@ export class AuthService {
     }, {
       params: { key: environment.firebaseApiKey }
     })
-      .pipe(catchError(errorRes => {
-        let errorMessage = "An unknown error occurred!";
-        if (!errorRes.error || !errorRes.error.error || !errorRes.error.error.message) {
-          return throwError(() => errorMessage);
-        }
-        switch (errorRes.error.error.message) {
-          case "EMAIL_EXISTS":
-            errorMessage = "This email already exists!";
-        }
-        return throwError(() => errorMessage);
-      }));
+      .pipe(catchError(this.handleError));
   }
+
   login(username: string, password: string) {
     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword', {
       'email': username,
@@ -48,22 +39,29 @@ export class AuthService {
     }, {
       params: { key: environment.firebaseApiKey }
     })
-      .pipe(catchError(errorRes => {
-        let errorMessage = "An unknown error occurred!";
-        if (!errorRes.error || !errorRes.error.error || !errorRes.error.error.message) {
-          return throwError(() => errorMessage);
-        }
-        switch (errorRes.error.error.message) {
-          case "INVALID_LOGIN_CREDENTIALS":
-            errorMessage = "Invalid login credentials";
-          case "EMAIL_NOT_FOUND":
-            errorMessage = "Unkown user";
-          case "INVALID_PASSWORD":
-            errorMessage = "Wrong password";
-          case "USER_DISABLED":
-            errorMessage = "User disabled";
-        }
-        return throwError(() => errorMessage);
-      }));
+      .pipe(catchError(this.handleError));
   }
+
+  private handleError(errorRes: HttpErrorResponse) {
+    let errorMessage = "An unknown error occurred!";
+    if (!errorRes.error || !errorRes.error.error || !errorRes.error.error.message) {
+      return throwError(() => errorMessage);
+    }
+    switch (errorRes.error.error.message) {
+      //signUp errors
+      case "EMAIL_EXISTS":
+        errorMessage = "This email already exists!";
+        break;
+      //signIn errors
+      case "INVALID_LOGIN_CREDENTIALS":
+      case "EMAIL_NOT_FOUND":
+      case "INVALID_PASSWORD":
+        errorMessage = "Invalid login credentials";
+        break;
+      case "USER_DISABLED":
+        errorMessage = "User disabled";
+        break;
+    }
+    return throwError(() => errorMessage);
+  };
 }
