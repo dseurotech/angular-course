@@ -13,7 +13,7 @@ export class RecipesResolverService implements Resolve<Recipe[]> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<Recipe[]> {
     const recipes = this.recipesService.getRecipes();
-    if (recipes.length === 0) {∏
+    if (recipes.length === 0) {
       return this.dataStorageService.fetchRecipes();
     } else {
       return recipes;
