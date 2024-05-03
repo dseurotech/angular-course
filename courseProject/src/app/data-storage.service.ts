@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RecipeService } from './recipes/recipe.service';
 import { Recipe } from './recipes/recipe.model';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +24,9 @@ export class DataStorageService {
           //initialize the ingredients if it returns as null from server
           return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] };
         });
-      }))
-      .subscribe(recipes => {
-        this.recipesService.setRecipes(recipes);
-      })
+      }),
+    tap(recipes=>{
+      this.recipesService.setRecipes(recipes);
+    }));
   }
 }
