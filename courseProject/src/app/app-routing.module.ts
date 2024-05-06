@@ -10,7 +10,7 @@ import { AuthComponent } from "./auth/auth.component";
 
 const appRoutes: Routes = [
     { path: 'auth', component: AuthComponent },
-    { path: '', redirectTo: '/recipes', pathMatch: 'full' },
+    { path: '', redirectTo: '/auth', pathMatch: 'full' },
     {
         path: 'recipes', component: RecipesComponent,
         children: [
