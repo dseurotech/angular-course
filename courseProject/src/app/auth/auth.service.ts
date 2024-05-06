@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
+import { UserRepoService } from './user-repo.service';
 
 export interface AuthResponseData {
   idToken: string,
@@ -19,9 +20,9 @@ export interface AuthResponseData {
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private userRepo: UserRepoService, private http: HttpClient, private router: Router) { }
   user = new BehaviorSubject<User>(null);
-
+  private tokenExpirationTimer: any;
   //sign up: https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
   signUp(username: string, password: string) {
     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp', {
@@ -31,7 +32,7 @@ export class AuthService {
     }, {
       params: { key: environment.firebaseApiKey }
     })
-      .pipe(catchError(this.handleError), tap(this.signalUser));
+      .pipe(catchError(this.handleError), tap(this.handleAuthentication));
   }
 
   //sign in: https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]
@@ -43,14 +44,31 @@ export class AuthService {
     }, {
       params: { key: environment.firebaseApiKey }
     })
-      .pipe(catchError(this.handleError), tap(this.signalUser.bind(this)));
+      .pipe(catchError(this.handleError), tap(this.handleAuthentication.bind(this)));
   }
 
-  private signalUser(authR: AuthResponseData) {
+  autoLogin() {
+    const maybeUser = this.userRepo.fetchUser();
+    this.user.next(maybeUser);
+    if (maybeUser) {
+      this.autoLogout(maybeUser.tokenValidForMillis);
+    }
+  }
+
+  autoLogout(expirationDurationMillis: number) {
+    console.log(expirationDurationMillis);
+    this.tokenExpirationTimer = setTimeout(this.logout.bind(this), expirationDurationMillis);
+  }
+
+  private handleAuthentication(authR: AuthResponseData) {
     const tokenExpiresInMilliseconds = +authR.expiresIn * 1000;
     const expirationDate = new Date(new Date().getTime() + tokenExpiresInMilliseconds);
-    this.user.next(new User(authR.email, authR.localId, authR.idToken, expirationDate));
+    const user = new User(authR.email, authR.localId, authR.idToken, expirationDate)
+    this.user.next(user);
+    this.userRepo.storeUser(user);
+    this.autoLogout(tokenExpiresInMilliseconds);
   }
+
   private handleError(errorRes: HttpErrorResponse) {
     let errorMessage = "An unknown error occurred!";
     if (!errorRes.error || !errorRes.error.error || !errorRes.error.error.message) {
@@ -76,6 +94,11 @@ export class AuthService {
 
   logout() {
     this.user.next(null);
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+      this.tokenExpirationTimer = null;
+    }
+    localStorage.removeItem('usr');
     this.router.navigate(["/auth"]);
   }
 }

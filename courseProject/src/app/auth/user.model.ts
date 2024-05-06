@@ -8,4 +8,7 @@ export class User {
         }
         return this._token;
     }
+    get tokenValidForMillis(): number {
+        return this._tokenExpirationDate.getTime() - new Date().getTime();
+    }
 }
