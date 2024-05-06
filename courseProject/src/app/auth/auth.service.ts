@@ -17,6 +17,7 @@ export interface AuthResponseData {
   providedIn: 'root'
 })
 export class AuthService {
+
   constructor(private http: HttpClient) { }
   user = new Subject<User>();
 
@@ -71,4 +72,7 @@ export class AuthService {
     }
     return throwError(() => errorMessage);
   };
+  logout() {
+    this.user.next(null);
+  }
 }
