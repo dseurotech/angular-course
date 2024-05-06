@@ -16,28 +16,23 @@ export class DataStorageService {
 
   storeRecipies() {
     const recipes = this.recipesService.getRecipes();
-    
+
     this.http.put(environment.firebaseDbUrl + "/recipes.json", recipes)
       .subscribe(response => { console.log(response) });
   }
 
   fetchRecipes() {
-    return this.authSvc.user.pipe(
-      take(1),
-      exhaustMap(user => {
-        return this.http.get<Recipe[]>(environment.firebaseDbUrl + "/recipes.json", {
-          params: new HttpParams().set("auth", user.token)
-        });
-      }),
-      map(recipes => {
-        return recipes.map(recipe => {
-          //initialize the ingredients if it returns as null from server
-          return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] };
-        });
-      }),
-      tap(recipes => {
-        this.recipesService.setRecipes(recipes);
-      })
-    );
+    return this.http.get<Recipe[]>(environment.firebaseDbUrl + "/recipes.json")
+      .pipe(
+        map(recipes => {
+          return recipes.map(recipe => {
+            //initialize the ingredients if it returns as null from server
+            return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] };
+          });
+        }),
+        tap(recipes => {
+          this.recipesService.setRecipes(recipes);
+        })
+      );
   }
 }
