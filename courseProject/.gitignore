@@ -2,7 +2,7 @@
 
 /src/environments/environment.development.ts
 /src/environments/environment.prod.ts
-
+.firebase/
 
 # Compiled output
 /dist
