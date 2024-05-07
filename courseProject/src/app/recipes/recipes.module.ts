@@ -10,6 +10,7 @@ import { AppRoutingModule } from "../app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
+import { RecipesRoutingModule } from "./recipes-routing.module";
 
 @NgModule(
     {
@@ -24,16 +25,10 @@ import { RouterModule } from "@angular/router";
         imports: [
             CommonModule,
             FormsModule,
-            RouterModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            RecipesRoutingModule
         ],
         exports: [
-            RecipesComponent,
-            RecipeListComponent,
-            RecipeDetailComponent,
-            RecipeItemComponent,
-            SelectRecipeComponent,
-            RecipeEditComponent,
         ]
     }
 )
