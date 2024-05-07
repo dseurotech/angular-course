@@ -10,7 +10,7 @@ import { AuthComponent } from "./auth/auth.component";
 import { AuthGuard } from "./auth/auth.guard";
 
 const appRoutes: Routes = [
-    { path: 'auth', component: AuthComponent },
+    
     { path: '', redirectTo: '/auth', pathMatch: 'full' },
 ];
 @NgModule({
