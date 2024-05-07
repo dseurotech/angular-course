@@ -12,9 +12,6 @@ import { AuthGuard } from "./auth/auth.guard";
 const appRoutes: Routes = [
     { path: 'auth', component: AuthComponent },
     { path: '', redirectTo: '/auth', pathMatch: 'full' },
-    ,
-    { path: 'shopping-list', component: ShoppingListComponent },
-    // { path: '**', redirectTo: '/recipes' }
 ];
 @NgModule({
     imports: [RouterModule.forRoot(appRoutes)],
