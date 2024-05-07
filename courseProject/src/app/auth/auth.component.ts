@@ -50,4 +50,8 @@ export class AuthComponent {
       });
     // authForm.reset();
   }
+
+  onCloseError() {
+    this.error = null;
+  }
 }
