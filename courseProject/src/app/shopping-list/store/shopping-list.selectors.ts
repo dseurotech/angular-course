@@ -1,8 +1,5 @@
 import { createSelector } from "@ngrx/store";
-import { Ingredient } from "../../shared/ingredient.model";
-import { pipe } from "rxjs";
-import { State } from "./shopping-list.reducer";
-import { AppState } from "../../app.module";
+import { AppState } from "../../store/app.reducer";
 
 export const shoppingList = (state: AppState) => state.shoppingList;
 export const ingredients = createSelector(
