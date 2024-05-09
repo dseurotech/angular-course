@@ -6,6 +6,9 @@ import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
 import { UserRepoService } from './user-repo.service';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../store/app.reducer';
+import * as fromAuth from './store/auth.actions';
 
 export interface AuthResponseData {
   idToken: string,
@@ -20,9 +23,15 @@ export interface AuthResponseData {
 })
 export class AuthService {
 
-  constructor(private userRepo: UserRepoService, private http: HttpClient, private router: Router) { }
-  user = new BehaviorSubject<User>(null);
+  constructor(
+    private userRepo: UserRepoService,
+    private http: HttpClient,
+    private router: Router,
+    private store: Store<fromApp.AppState>
+  ) { }
+
   private tokenExpirationTimer: any;
+
   //sign up: https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
   signUp(username: string, password: string) {
     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp', {
@@ -49,7 +58,7 @@ export class AuthService {
 
   autoLogin() {
     const maybeUser = this.userRepo.fetchUser();
-    this.user.next(maybeUser);
+    this.store.dispatch(fromAuth.login(maybeUser));
     if (maybeUser) {
       this.autoLogout(maybeUser.tokenValidForMillis);
     }
@@ -64,7 +73,7 @@ export class AuthService {
     const tokenExpiresInMilliseconds = +authR.expiresIn * 1000;
     const expirationDate = new Date(new Date().getTime() + tokenExpiresInMilliseconds);
     const user = new User(authR.email, authR.localId, authR.idToken, expirationDate)
-    this.user.next(user);
+    this.store.dispatch(fromAuth.login(user));
     this.userRepo.storeUser(user);
     this.autoLogout(tokenExpiresInMilliseconds);
   }
@@ -93,7 +102,7 @@ export class AuthService {
   };
 
   logout() {
-    this.user.next(null);
+    this.store.dispatch(fromAuth.logout());
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
       this.tokenExpirationTimer = null;
