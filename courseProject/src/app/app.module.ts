@@ -12,6 +12,7 @@ import * as fromApp from './store/app.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth/store/auth.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     StoreModule.forRoot(fromApp.appReducer, {}),
     EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
+    StoreRouterConnectingModule.forRoot(),
   ],
   bootstrap: [AppComponent]
 })
