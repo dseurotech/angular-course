@@ -30,4 +30,7 @@ export class UserRepoService {
     }
     return parsedUser;
   }
+  clear() {
+    localStorage.removeItem(this.USER_KEY);
+  }
 }
